@@ -54,6 +54,7 @@ const Product = ({ product }: ProductProps) => {
           padding: "24px",
           borderRadius: "25px",
           width: "380px",
+          
         }}
         marginBottom={"180px"}
       >

@@ -41,6 +41,7 @@ export const Menu = () => {
     handleGetMenuItems();
     handleGetCategories();
     handleGetRestaurantInfo();
+    console.log(menu)
   }, [location.state]);
 
   const handleCategoryClick = (categoryId: string) => {
@@ -59,8 +60,7 @@ export const Menu = () => {
         <Box
           id={category._id}
           key={category._id}
-          ref={(el) => (sectionRefs.current[category._id] = el)}
-          sx={{ marginBottom: "-280px" }}
+          ref={(el:any) => (sectionRefs.current[category._id] = el)}
         >
           <Category
             name={category.name}

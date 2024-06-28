@@ -20,7 +20,7 @@ import { useEffect } from "react";
 
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
-const pages = ["Home", "Resturants", "why us"];
+const pages = ["Home", "Restaurants", "why us"];
 
 function NavBar({
   isUser,
@@ -174,7 +174,7 @@ function NavBar({
                     key={page}
                     onClick={() => {
                       handleCloseNavMenu();
-                      if (page == "Resturants") {
+                      if (page == "Restaurants") {
                         navigate("/restaurants");
                       } else if (page.toLowerCase() === "why us") {
                         location.pathname == "/"
@@ -258,7 +258,7 @@ function NavBar({
                   key={page}
                   onClick={() => {
                     handleCloseNavMenu();
-                    if (page == "Resturants") {
+                    if (page == "Restaurants") {
                       navigate("/restaurants");
                     } else if (page.toLowerCase() === "why us") {
                       location.pathname == "/"

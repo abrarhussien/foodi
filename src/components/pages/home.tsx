@@ -131,6 +131,7 @@ useEffect(()=>{
               borderRadius: "20%",
               position: "relative",
               bottom: "30px",
+              visibility:{xs:"hidden",sm:"visible"}
             }}
           ></Box>
           <Stack
@@ -141,7 +142,6 @@ useEffect(()=>{
             top={"-40px"}
           >
             <Typography
-              variant="h5"
               noWrap
               sx={{
                 fontWeight: 700,
@@ -149,10 +149,12 @@ useEffect(()=>{
                 color: "black",
                 textAlign: "center",
                 position: "initial",
+                fontSize:{xs:"3.5vw",sm:"20px"}
               }}
             >
               Order food online in Zagazig
             </Typography>
+
             <Search>
               <StyledInputBase
                 placeholder="Search…"
@@ -177,6 +179,7 @@ useEffect(()=>{
               backgroundSize: "cover",
               border: "5px",
               borderRadius: "5%",
+              visibility:{xs:"hidden",sm:"visible"}
             }}
           ></Box>
         </Stack>
@@ -199,8 +202,7 @@ useEffect(()=>{
               letterSpacing: ".3rem",
               color: "black",
               textAlign: "center",
-              position: "relative",
-              top: "100px",
+              marginTop:"90px"
             }}
           >
             Restaurants
@@ -209,7 +211,7 @@ useEffect(()=>{
             justifyContent="center"
             alignItems="center"
             sx={{
-              minHeight: "800px",
+              marginBlock:"40px",
               background: "#f3ece4",
             }}
           >
@@ -249,7 +251,7 @@ useEffect(()=>{
             </Link>
           </Stack>
         </Box>
-        <Box sx={{ marginTop: "0px" }} ref={whyUsRef}>
+        <Box sx={{ marginTop: {xs:"90px"} }} ref={whyUsRef}>
           <Card />
         </Box>
       </div>

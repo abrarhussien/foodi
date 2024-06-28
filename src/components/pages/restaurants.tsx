@@ -101,6 +101,8 @@ export default function Restaurants() {
             backgroundPosition: "center center",
             backgroundSize: "cover",
             borderRadius: "1%",
+            visibility:{xs:"hidden",sm:"visible"}
+
           }}
         ></Box>
         <Stack
@@ -111,7 +113,6 @@ export default function Restaurants() {
           top={"-40px"}
         >
           <Typography
-            variant="h5"
             noWrap
             sx={{
               fontWeight: 700,
@@ -119,6 +120,7 @@ export default function Restaurants() {
               textAlign: "center",
               position: "initial",
               bottom: "10px",
+              fontSize:{xs:"3.8vw",sm:"20px"}
             }}
           >
             Order from your favorite restaurants now!
@@ -134,6 +136,7 @@ export default function Restaurants() {
             backgroundSize: "cover",
             position: "relative",
             bottom: "20px",
+            visibility:{xs:"hidden",sm:"visible"}
           }}
         ></Box>
       </Stack>

@@ -11,7 +11,7 @@ const About = ({ restaurantInfo }: IProps) => {
       <Grid
         item
         xs={12}
-        sx={{ width: "100%", marginTop: "480px", marginBottom: "200px" }}
+        sx={{ width: "100%", marginTop: "90px", marginBottom: "200px" }}
       >
         <Box
           sx={{
