@@ -19,6 +19,7 @@ const About = ({ restaurantInfo }: IProps) => {
             marginBottom: 4,
             maxWidth: "800px",
             margin: "0 auto",
+            paddingInline:{xs:"22px",md:"30px"}
           }}
         >
           <Typography

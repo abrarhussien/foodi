@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "../../api/axios";
 import { IMenuCategory } from "../../models/menuCategory.model";
 import { IProduct } from "../../models/product.model";
@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 
 export const Menu = () => {
   const location = useLocation();
+  const {id}=useParams()
 
   const [menu, setMenu] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<IMenuCategory[]>([]);
@@ -22,26 +23,24 @@ export const Menu = () => {
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const handleGetMenuItems = async () => {
-    const res = await axios.get("/api/v1/products/" + location.state);
+    const res = await axios.get("/api/v1/products/" + id);
     setMenu(res.data);
   };
 
   const handleGetCategories = async () => {
-    const res = await axios.get("/api/v1/categories/" + location.state);
+    const res = await axios.get("/api/v1/categories/" + id);
     setCategories(res.data);
-    console.log(res.data);
   };
 
   const handleGetRestaurantInfo = async () => {
-    const res = await axios.get("/api/v1/restaurant/" + location.state);
+    const res = await axios.get("/api/v1/restaurant/" + id);
     setRestaurantInfo(res.data);
-  };
+  }
 
   useEffect(() => {
     handleGetMenuItems();
     handleGetCategories();
     handleGetRestaurantInfo();
-    console.log(menu)
   }, [location.state]);
 
   const handleCategoryClick = (categoryId: string) => {
@@ -51,11 +50,13 @@ export const Menu = () => {
   return (
     <>
       <Image restaurantInfo={restaurantInfo} />
-      <Section
-        categories={categories}
-        sectionRefs={sectionRefs}
-        onCategoryClick={handleCategoryClick}
-      />
+      {categories.length > 0 && (
+        <Section
+          categories={categories}
+          sectionRefs={sectionRefs}
+          onCategoryClick={handleCategoryClick}
+        />
+      )}
       {categories.map((category) => (
         <Box
           id={category._id}

@@ -2,7 +2,7 @@ import { CardMedia, Typography, useTheme, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { IProduct } from "../../models/product.model";
 import axios from "../../api/axios";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import CartContext from "../../context/CartProvider";
 
 interface ProductProps {
@@ -13,17 +13,21 @@ const Product = ({ product }: ProductProps) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const {
+    cartItems,
     setCartItems,
-    setCartQuantity,
     setRestaurantId,
     calculateTotal,
     calculateQuantity,
-  }:any = useContext(CartContext);
+  }: any = useContext(CartContext);
 
-  const handleAddItemToCart = async (productId: string) => {
+  const handleAddItemToCart = async (productId: string, resId: string) => {
     try {
       if (!localStorage.getItem("token")) {
         navigate("/login");
+      }
+
+      if (resId !== cartItems[0].productId.restaurantId) {
+        navigate("/");
       }
       const res = await axios.post(
         "/api/v1/cart",
@@ -54,7 +58,6 @@ const Product = ({ product }: ProductProps) => {
           padding: "24px",
           borderRadius: "25px",
           width: "380px",
-          
         }}
         marginBottom={"180px"}
       >
@@ -75,7 +78,13 @@ const Product = ({ product }: ProductProps) => {
             transform: "translateX(-50%)",
           }}
         />
-        <Typography sx={{ fontWeight: "700", fontSize: "24px", mt: "159px" }}>
+        <Typography
+          sx={{
+            fontWeight: "700",
+            fontSize: "24px",
+            mt: { xs: "120px", sm: "159px" },
+          }}
+        >
           {product.title}
         </Typography>
 
@@ -108,7 +117,7 @@ const Product = ({ product }: ProductProps) => {
 
         <Button
           onClick={() => {
-            navigate("/productdetails", { state: product });
+            navigate("/productdetails/"+product.restaurantId+"/"+product._id);
           }}
           variant="outlined"
           fullWidth
@@ -138,7 +147,7 @@ const Product = ({ product }: ProductProps) => {
             fontWeight: "700",
             mt: "16px",
           }}
-          onClick={() => handleAddItemToCart(product._id)}
+          onClick={() => handleAddItemToCart(product._id, product.restaurantId)}
         >
           Add To Cart
         </Button>

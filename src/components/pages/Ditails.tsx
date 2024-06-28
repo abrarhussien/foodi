@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { IProduct } from "../../models/product.model";
 import axios from "../../api/axios";
 import CartContext from "../../context/CartProvider";
@@ -24,6 +24,7 @@ interface IProps {}
 const Details = ({}: IProps) => {
   const theme = useTheme();
   const location = useLocation();
+  const {id,resId}= useParams();
   const [productdetails, setProductDetails] = useState<IProduct>({
     _id: "",
     description: "",
@@ -52,6 +53,8 @@ const Details = ({}: IProps) => {
   const [showMore, setShowMore] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isInCart, setIsInCart] = useState(false);
+
+  const url = "https://back-end-j1bi.onrender.com/api/v1";
 
   const handleAddItemToCart = async (product: IProduct, quantity: number) => {
     try {
@@ -101,16 +104,24 @@ const Details = ({}: IProps) => {
     }
   };
 
-  useEffect(() => {
-    setProductDetails(location.state);
+  const getProductDetails=async(id:any)=>{
+    const res = await axios.get(url+"/products/" +resId+"/"+ id);
+    if(res.status=200){
+      setProductDetails(res.data);
+    }
 
-    if (location.state) {
+  }
+
+  useEffect(() => {
+    getProductDetails(id)
+    
+    if (id) {
       const productInCart = cartItems.some(
-        (item: any) => item.productId === location.state._id
+        (item: any) => item.productId === id
       );
       setIsInCart(productInCart);
     }
-  }, [location.state, cartItems]);
+  }, [id, cartItems]);
 
   const handleIncreaseQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -231,7 +242,7 @@ const Details = ({}: IProps) => {
                 >
                   {productdetails?.description}
                 </Typography>
-                {productdetails.description.length > 100 && (
+                {productdetails?.description?.length > 100 && (
                   <Button
                     sx={{
                       position: "absolute",
@@ -268,7 +279,7 @@ const Details = ({}: IProps) => {
                 }}
               >
                 <Grid container spacing={2}>
-                  {productdetails?.ingredientsIds.map((ingredient, index) => (
+                  {productdetails?.ingredientsIds?.map((ingredient, index) => (
                     <Grid item xs={6} key={index}>
                       <Typography
                         variant="body2"

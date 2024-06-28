@@ -20,7 +20,7 @@ function SideCart({
     cartTotal,
     editItemQuantity,
     deleteItemQuantity,
-  } = useContext(CartContext);
+  }: any = useContext(CartContext);
 
   const [showDeleteItemPopUp, setShowDeleteItemPopUp] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -39,7 +39,6 @@ function SideCart({
     if (item.quantity + newQuantity < 0) {
       return;
     } else if (item.quantity + newQuantity === 0) {
-      handleDeleteItem(item);
       return;
     }
     editItemQuantity(item.productId._id, newQuantity);
@@ -53,7 +52,6 @@ function SideCart({
           headers: { jwt: localStorage.getItem("token") },
         }
       );
-      console.log(res);
     };
     fetchEditItemQuantity();
   };
@@ -194,7 +192,15 @@ function SideCart({
                   </Box>
                   <Typography
                     title={item.productId.title}
-                    sx={{ fontSize: "16px" }}
+                    sx={{
+                      fontSize: "16px",
+                      display: "block",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: " ellipsis",
+                      msTextOverflow: "ellipsis",
+                      maxWidth: { xs: "8vw" },
+                    }}
                   >
                     {item.productId.title}
                   </Typography>

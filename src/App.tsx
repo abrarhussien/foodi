@@ -24,6 +24,8 @@ import { jwtDecode } from "jwt-decode";
 import { IPayload } from "./models/payload.mode.ts";
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 import PaymentSuccess from "./components/pages/payment_success.tsx";
+import Loading from "./components/shared/Loading.tsx";
+import LoadingContext from "./context/LoadingProvider.tsx";
 
 function App() {
   const path = useLocation().pathname;
@@ -62,7 +64,6 @@ function App() {
         calculateTotal(newCartItems);
       }
     };
-
 
     if (localStorage.getItem("token")) {
       const token = localStorage.getItem("token");
@@ -106,9 +107,9 @@ function App() {
             ></NavBar>
           )}
           <Routes>
-            <Route path="/menu" element={<Menu />} />
+            <Route path="/menu/:id" element={<Menu />} />
 
-            <Route path="/productdetails" element={<Ditails />} />
+            <Route path="/productdetails/:resId/:id" element={<Ditails />} />
             <Route element={<IsNotAuthGuard />}>
               <Route
                 path="/register"
@@ -126,12 +127,15 @@ function App() {
             <Route path="/" element={<Home whyUsRef={whyUsRef} />} />
             <Route path="/restaurants" element={<Restaurants />} />
           </Routes>
-          {path !== "/register" && path !== "/login" && <Footer whyUsRef={whyUsRef}/>}
+          {path !== "/register" && path !== "/login" && (
+            <Footer whyUsRef={whyUsRef} />
+          )}
         </Stack>
         {openSideCart && <SideCart setOpenSideCart={setOpenSideCart} />}
-        {path !== "/register" && path !== "/login" && path !== "/cart" && isUser && (
-          <CartIcon setOpenSideCart={setOpenSideCart} />
-        )}
+        {path !== "/register" &&
+          path !== "/login" &&
+          path !== "/cart" &&
+          isUser && <CartIcon setOpenSideCart={setOpenSideCart} />}
       </ThemeProvider>
     </>
   );

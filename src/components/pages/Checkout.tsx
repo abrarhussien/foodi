@@ -29,6 +29,7 @@ function Checkout({}) {
   const [phones, setPhones] = useState<IPhone[]>([]);
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const addPhoneNumber = (phone: any) => {
     const newPhones = [...phones, phone];
     setPhones(newPhones);
@@ -269,11 +270,15 @@ function Checkout({}) {
                         })
                       }
                     >
-                      {phones.map((phone) => (
-                        <MenuItem key={phone.phoneNumber} value={phone._id}>
-                          {phone.phoneNumber}
-                        </MenuItem>
-                      ))}
+                      {phones.length ? (
+                        phones.map((phone) => (
+                          <MenuItem key={phone.phoneNumber} value={phone._id}>
+                            {phone.phoneNumber}
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem>No Phone To Show</MenuItem>
+                      )}
                     </Select>
                     <Box
                       onClick={() => {

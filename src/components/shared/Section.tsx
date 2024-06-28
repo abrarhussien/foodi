@@ -29,10 +29,9 @@ const Section = ({ categories, sectionRefs, onCategoryClick }: IProps) => {
     >
       <Grid
         container
-        spacing={0}
         justifyContent="center"
         alignItems="center"
-        sx={{ padding: "0  100px" }}
+        sx={{ padding:{xs:"0px",md: "0  100px"},gap:{xs:0,md:4,xl:0} }}
       >
         {categories.length
           ? categories.map((item, index) => (
@@ -46,6 +45,7 @@ const Section = ({ categories, sectionRefs, onCategoryClick }: IProps) => {
                     backgroundColor: "transparent",
                     boxShadow: "none",
                     mb: "15px",
+                    marginInline:"auto"
                   }}
                 >
                   <CardMedia

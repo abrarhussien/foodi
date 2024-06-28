@@ -19,7 +19,7 @@ const Category = ({ name, products }: IProps) => {
           alignItems="center"
           sx={{
             fontWeight: "700",
-            fontSize: "40px",
+            fontSize:{xs:"30px",sm:"40px"},
           }}
         >
           {name}
@@ -36,7 +36,7 @@ const Category = ({ name, products }: IProps) => {
               <Product key={product._id} product={product} />
             ))
           ) : (
-            <Typography sx={{textAlign:"center", marginTop:"-120px"}} variant="h2">Stay Tuned For Upcoming Items</Typography>
+            <Typography sx={{textAlign:"center", marginTop:"-120px",fontSize:{xs:"30px",sm:"40px"}, fontWeight:"700"}} variant="h2">Stay Tuned For Upcoming Items</Typography>
           )}
         </Stack>
       </Grid>

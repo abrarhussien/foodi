@@ -31,6 +31,7 @@ function CartIcon({
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "row",
+          zIndex:"2"
         }}
       >
         <svg
