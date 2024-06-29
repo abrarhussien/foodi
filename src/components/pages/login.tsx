@@ -6,8 +6,9 @@ import { PWD_REGEX } from "../../regex/pass";
 import AuthProvider from "../../context/AuthProvider.tsx";
 import { CircularProgress } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "../../api/axios";
 import "../../styles/Log.css";
+import useAuth from "../../hooks/useAuth.tsx";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate.tsx";
 
 const LOGIN_URL = "/api/v1/authentication/login";
 
@@ -16,6 +17,9 @@ export default function Login({
 }: {
   setisUser: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+
+  const axiosPrivate = useAxiosPrivate();
+
   const navigate = useNavigate();
   const location = useLocation();
   const home = location.state?.home?.pathname || "/";
@@ -33,6 +37,8 @@ export default function Login({
   const [errMsg, setErrMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const {auth,setAuth}:any = useAuth()
+
   useEffect(() => {
     userRef.current?.focus();
   }, []);
@@ -43,11 +49,11 @@ export default function Login({
     setIsLoading(true);
 
     try {
-      const res = await axios.post(LOGIN_URL, { email, password: pwd });
+      const res = await axiosPrivate.post(LOGIN_URL, { email, password: pwd });
       const token = await res.data.token;
 
       setErrMsg("");
-      // setAuth({ token });
+      setAuth({ token });
 
       localStorage.setItem("token", token);
       setisUser(true);

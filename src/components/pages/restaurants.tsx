@@ -4,14 +4,16 @@ import { Link, useLocation } from "react-router-dom";
 import "../../styles/restaurant.css";
 import img from "../../assets/images/21.png";
 import img2 from "../../assets/images/22.png";
-import axios from "../../api/axios";
 import Section from "../shared/Section";
 import { IMenuCategory } from "../../models/menuCategory.model";
 import { IRestaurant } from "../../models/restaurant.model";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const itemsInPage = 8;
 
 export default function Restaurants() {
+  const axiosPrivate = useAxiosPrivate();
+
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
   const [allRestaurants, setAllRestaurants] = useState<IRestaurant[]>([]);
   const [page, setPage] = useState(0);
@@ -27,7 +29,7 @@ export default function Restaurants() {
   const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   const handleGetCategories = async () => {
-    const res = await axios.get("/api/v1/restaurantCategory");
+    const res = await axiosPrivate.get("/api/v1/restaurantCategory");
     setCategories(res.data);
   };
 
@@ -50,7 +52,7 @@ export default function Restaurants() {
 
   const getAllRestaurants = async () => {
     try {
-      const { data } = await axios.get("/api/v1/restaurant/");
+      const { data } = await axiosPrivate.get("/api/v1/restaurant/");
       setRestaurants(data);
       setAllRestaurants(data);
     } catch (err: any) {

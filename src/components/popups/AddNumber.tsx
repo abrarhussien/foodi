@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Stack, Typography } from "@mui/material";
-import axios from "axios";
 import React, { useState } from "react";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 const phoneRegex = new RegExp(/^01[0-2,5]{1}[0-9]{8}$/);
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
@@ -18,6 +18,8 @@ function AddNumber({
     }>
   >;
 }) {
+  const axiosPrivate = useAxiosPrivate();
+
   let [phone, setPhone] = useState("");
   let [error, setError] = useState(false);
 
@@ -26,13 +28,10 @@ function AddNumber({
   };
   const handleAddPhone = () => {
     const fetchAddPhone = async () => {
-      const res = await axios.post(
+      const res = await axiosPrivate.post(
         url + "/phones",
         {
           phoneNumber: phone,
-        },
-        {
-          headers: { jwt: localStorage.getItem("token") },
         }
       );
       addPhoneNumber(res.data);

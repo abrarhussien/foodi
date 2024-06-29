@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import axios from "../../api/axios";
 import { IMenuCategory } from "../../models/menuCategory.model";
 import { IProduct } from "../../models/product.model";
 import { IRestaurant } from "../../models/restaurant.model";
@@ -9,8 +8,11 @@ import Category from "../shared/Category";
 import Image from "../shared/Image";
 import Section from "../shared/Section";
 import { Box } from "@mui/material";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 export const Menu = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const location = useLocation();
   const {id}=useParams()
 
@@ -23,17 +25,17 @@ export const Menu = () => {
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const handleGetMenuItems = async () => {
-    const res = await axios.get("/api/v1/products/" + id);
+    const res = await axiosPrivate.get("/api/v1/products/" + id);
     setMenu(res.data);
   };
 
   const handleGetCategories = async () => {
-    const res = await axios.get("/api/v1/categories/" + id);
+    const res = await axiosPrivate.get("/api/v1/categories/" + id);
     setCategories(res.data);
   };
 
   const handleGetRestaurantInfo = async () => {
-    const res = await axios.get("/api/v1/restaurant/" + id);
+    const res = await axiosPrivate.get("/api/v1/restaurant/" + id);
     setRestaurantInfo(res.data);
   }
 

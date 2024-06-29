@@ -9,9 +9,11 @@ export const AuthProvider = ({ children }: any) => {
       token: "",
       userId: "",
     });
+  const [isUser, setisUser] = useState(false);
+
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth ,isUser,setisUser}}>
       {children}
     </AuthContext.Provider>
   );

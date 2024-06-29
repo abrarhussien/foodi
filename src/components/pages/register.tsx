@@ -6,8 +6,8 @@ import { PWD_REGEX } from "../../regex/pass";
 import { EMAIL_REGEX } from "../../regex/email";
 import { CircularProgress } from "@mui/material";
 import "../../styles/Auth.css";
-import axios from "../../api/axios";
 import { Link, useNavigate } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const REGISTER_URL = "/api/v1/authentication/register";
 
@@ -17,6 +17,9 @@ export default function Register({
   setisUser: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
+
+  const axiosPrivate = useAxiosPrivate();
+
 
   const userRef = useRef<HTMLInputElement>(null);
   const errRef: any = useRef();
@@ -78,7 +81,7 @@ export default function Register({
     setIsLoading(true);
 
     try {
-      await axios.post(REGISTER_URL, {
+      await axiosPrivate.post(REGISTER_URL, {
         fullName: user,
         email,
         password: pwd,

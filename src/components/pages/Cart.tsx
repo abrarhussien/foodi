@@ -13,14 +13,17 @@ import {
 } from "@mui/material";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import CartContext from "../../context/CartProvider";
 import ConfirmDeleteFromCart from "../popups/ConfirmDeleteFromCart";
 import Loading from "../shared/Loading";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
+
 function Cart() {
+  const axiosPrivate = useAxiosPrivate();
+
   const {
     cartItems,
     cartQuantity,
@@ -38,9 +41,7 @@ function Cart() {
     deleteItemQuantity(item.productId._id);
 
     const fetchDeleteItem = async () => {
-      const res = await axios.delete(url + "/cart/" + item._id, {
-        headers: { jwt: localStorage.getItem("token") },
-      });
+      const res = await axiosPrivate.delete(url + "/cart/" + item._id);
     };
     fetchDeleteItem();
   };
@@ -53,15 +54,11 @@ function Cart() {
     }
     editItemQuantity(item.productId._id, newQuantity);
     const fetchEditItemQuantity = async () => {
-      const res = await axios.patch(
+      const res = await axiosPrivate.patch(
         url + "/cart/" + item._id,
         {
           quantity: item.quantity + newQuantity,
-        },
-        {
-          headers: { jwt: localStorage.getItem("token") },
-        }
-      );
+        });
     };
     fetchEditItemQuantity();
   };
@@ -452,6 +449,7 @@ function Cart() {
                 </Grid>
                 <Grid item xs={12} md={4} lg={12}>
                   <Button
+                  onClick={()=>{navigate("/menu/"+cartItems[0]?.productId?.restaurantId)}}
                     variant="outlined"
                     sx={{
                       width: "100%",

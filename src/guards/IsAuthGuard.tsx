@@ -1,19 +1,28 @@
 import { jwtDecode } from "jwt-decode";
 import { Navigate, Outlet } from "react-router-dom";
 import { IPayload } from "../models/payload.mode";
-
+import useAuth from "../hooks/useAuth";
 
 const IsAuthGuard = ({ role }: { role: string | null }) => {
-  const token= localStorage.getItem("token");
-   const payload: IPayload | null = token ? jwtDecode(token) : null;
+  const { setAuth }: any = useAuth();
+  try {
+    const token = localStorage.getItem("token");
+    const payload: IPayload | null = token ? jwtDecode(token) : null;
 
-  if (payload?.role.name === role) {
-    return <Outlet />;
-  }
+    if (payload?.role.name === role) {
+      return <Outlet />;
+    }
 
-  switch (payload?.role.name) {
-    default:
+    switch (payload?.role.name) {
+      default:
+        return <Navigate to="/login" replace />;
+    }
+  } catch (err: any) {
+    if (err.message == "Invalid token specified: missing part #2") {
+      setAuth({ token: "" });
+      localStorage.removeItem("token");
       return <Navigate to="/login" replace />;
+    }
   }
 };
 

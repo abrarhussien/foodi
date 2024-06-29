@@ -16,22 +16,24 @@ import Login from "./components/pages/login";
 import { Menu } from "./components/pages/Menu.tsx";
 import Ditails from "./components/pages/Ditails.tsx";
 import UserInfoAndOrders from "./components/pages/UserInfoAndOrders.tsx";
-import axios from "axios";
 import CartContext from "./context/CartProvider.tsx";
 import IsNotAuthGuard from "./guards/IsNotAuthGuard.tsx";
 import IsAuthGuard from "./guards/IsAuthGuard.tsx";
 import { jwtDecode } from "jwt-decode";
+import NotFoundPage from "./components/pages/page404.tsx";
+
 import { IPayload } from "./models/payload.mode.ts";
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 import PaymentSuccess from "./components/pages/payment_success.tsx";
 import Loading from "./components/shared/Loading.tsx";
 import LoadingContext from "./context/LoadingProvider.tsx";
+import useAuth from "./hooks/useAuth.tsx";
+import useAxiosPrivate from "./hooks/useAxiosPrivate.tsx";
 
 function App() {
   const path = useLocation().pathname;
   const [openSideCart, setOpenSideCart] = useState(false);
 
-  const [isUser, setisUser] = useState(false);
 
   const {
     cartItems,
@@ -48,20 +50,23 @@ function App() {
     restaurantId,
     setRestaurantId,
   }: any = useContext(CartContext);
+  const {auth,setAuth,isUser,setisUser}:any=useAuth();
 
   const whyUsRef = useRef();
 
+  const axiosPrivate = useAxiosPrivate();
+
+
   useEffect(() => {
     const getUserCart = async () => {
-      const res = await axios.get(url + "/cart", {
-        headers: { jwt: localStorage.getItem("token") },
-      });
+      const res = await axiosPrivate.get(url + "/cart");
       if (res.data.itemsIds?.length) {
         const newCartItems = res.data.itemsIds;
         setCartItems(newCartItems);
         setRestaurantId(res.data.itemsIds[0].productId.restaurantId);
         calculateQuantity(newCartItems);
         calculateTotal(newCartItems);
+        console.log(newCartItems)
       }
     };
 
@@ -74,9 +79,11 @@ function App() {
 
       if (expDate > nowDate) {
         setisUser(true);
+        setAuth({token});
         getUserCart();
       } else {
         localStorage.removeItem("token");
+        setAuth({token:""})
       }
     } else {
       setisUser(false);
@@ -126,6 +133,7 @@ function App() {
 
             <Route path="/" element={<Home whyUsRef={whyUsRef} />} />
             <Route path="/restaurants" element={<Restaurants />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
           {path !== "/register" && path !== "/login" && (
             <Footer whyUsRef={whyUsRef} />

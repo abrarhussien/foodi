@@ -2,9 +2,9 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import item from "../../models/Item";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import CartContext from "../../context/CartProvider";
 import ConfirmDeleteFromCart from "../popups/ConfirmDeleteFromCart";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
@@ -13,6 +13,8 @@ function SideCart({
 }: {
   setOpenSideCart: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const axiosPrivate = useAxiosPrivate();
+
   const navigate = useNavigate();
   const {
     cartItems,
@@ -29,9 +31,7 @@ function SideCart({
     deleteItemQuantity(item.productId._id);
 
     const fetchDeleteItem = async () => {
-      const res = await axios.delete(url + "/cart/" + item._id, {
-        headers: { jwt: localStorage.getItem("token") },
-      });
+      const res = await axiosPrivate.delete(url + "/cart/" + item._id);
     };
     fetchDeleteItem();
   };
@@ -43,13 +43,10 @@ function SideCart({
     }
     editItemQuantity(item.productId._id, newQuantity);
     const fetchEditItemQuantity = async () => {
-      const res = await axios.patch(
+      const res = await axiosPrivate.patch(
         url + "/cart/" + item._id,
         {
           quantity: item.quantity + newQuantity,
-        },
-        {
-          headers: { jwt: localStorage.getItem("token") },
         }
       );
     };

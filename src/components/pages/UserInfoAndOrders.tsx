@@ -10,14 +10,15 @@ import OrderDetailsPopup from "./OrderDetailsPopup";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { IUser } from "../../models/user.model";
 import { IOrder } from "../../models/order.model";
-import axios from "../../api/axios";
 import { IPhone } from "../../models/phone.model";
 import { IItem } from "../../models/item.model";
 import { IRestaurant } from "../../models/restaurant.model";
-import { Link } from "react-router-dom";
 import Loading from "../shared/Loading";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const UserInfoAndOrders = () => {
+  const axiosPrivate = useAxiosPrivate();
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,6 +40,10 @@ const UserInfoAndOrders = () => {
   const [firstPhone, setFirstPhone] = useState("");
   const [secondPhone, setSecondPhone] = useState("");
 
+  const [firstPhoneError, setFirstPhoneError] = useState(false);
+  const [secondPhoneError, setSecondPhoneError] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(true);
+
   const [isEditMode, setIsEditMode] = useState(false);
 
   const handleOpen = (order: IOrder) => {
@@ -49,75 +54,89 @@ const UserInfoAndOrders = () => {
 
   const handleGetUser = async () => {
     setLoading(true);
-    const res = await axios.get("/api/v1/user", {
-      headers: { jwt: localStorage.getItem("token") },
-    });
+    const res = await axiosPrivate.get("/api/v1/user");
 
     setUser(res.data);
   };
 
   const handleGetRestaurants = async () => {
-    const res = await axios.get("/api/v1/restaurant");
+    const res = await axiosPrivate.get("/api/v1/restaurant");
 
     setRestaurants(res.data);
     setLoading(false);
   };
 
   const handleGetPhoneNumbers = async () => {
-    const res = await axios.get("/api/v1/phones", {
-      headers: { jwt: localStorage.getItem("token") },
-    });
+    const res = await axiosPrivate.get("/api/v1/phones");
 
     setPhones(res.data);
   };
 
   const handleGetUserOrders = async () => {
-    const res = await axios.get("/api/v1/orders/user", {
-      headers: { jwt: localStorage.getItem("token") },
-    });
+    const res = await axiosPrivate.get("/api/v1/orders/user");
 
     setOrders(res.data?.orders);
     setItems(res.data?.items);
   };
 
   const handleUpdateName = async (fullName: string) => {
-    await axios.patch(
+    await axiosPrivate.patch(
       "/api/v1/user",
-      { fullName },
-      {
-        headers: { jwt: localStorage.getItem("token") },
-      }
+      { fullName }
     );
   };
 
   const handleUpdatePhone = async (phoneNumber: string, phoneId: string) => {
-    await axios.patch(
+    await axiosPrivate.patch(
       "/api/v1/phones/" + phoneId,
-      { phoneNumber },
-      {
-        headers: { jwt: localStorage.getItem("token") },
-      }
+      { phoneNumber }
     );
   };
 
   const handleCreatePhone = async (phoneNumber: string) => {
-    await axios.post(
+    await axiosPrivate.post(
       "/api/v1/phones",
-      { phoneNumber },
-      {
-        headers: { jwt: localStorage.getItem("token") },
-      }
+      { phoneNumber }
     );
   };
 
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const regex = /^[0-9]*$/;
+    return regex.test(phoneNumber);
+  };
+
   const handleOnEdit = () => {
-    handleUpdateName(fullName);
+    if (isEditMode) {
+      let isValid = true;
 
-    if (phones[0]) handleUpdatePhone(firstPhone, phones[0]?._id);
-    else if (firstPhone) handleCreatePhone(firstPhone);
+      if (!validatePhoneNumber(firstPhone)) {
+        setFirstPhoneError(true);
+        isValid = false;
+      } else {
+        setFirstPhoneError(false);
+      }
 
-    if (phones[1]) handleUpdatePhone(secondPhone, phones[1]?._id);
-    else if (secondPhone) handleCreatePhone(secondPhone);
+      if (secondPhone && !validatePhoneNumber(secondPhone)) {
+        setSecondPhoneError(true);
+        isValid = false;
+      } else {
+        setSecondPhoneError(false);
+      }
+
+      if (isValid) {
+        handleUpdateName(fullName);
+
+        if (phones[0]) handleUpdatePhone(firstPhone, phones[0]?._id);
+        else if (firstPhone) handleCreatePhone(firstPhone);
+
+        if (phones[1]) handleUpdatePhone(secondPhone, phones[1]?._id);
+        else if (secondPhone) handleCreatePhone(secondPhone);
+
+        setIsEditMode(false);
+      }
+    } else {
+      setIsEditMode(true);
+    }
   };
 
   const handleTotalPrice = (orderId: string) => {
@@ -136,13 +155,11 @@ const UserInfoAndOrders = () => {
     const res = restaurants.find(
       (restaurant) => restaurant._id === item?.productId.restaurantId
     );
-    
-
 
     return res?.name;
   };
+
   useEffect(() => {
-    
     handleGetUser();
     handleGetPhoneNumbers();
     handleGetUserOrders();
@@ -159,9 +176,17 @@ const UserInfoAndOrders = () => {
     setSecondPhone(phones[1]?.phoneNumber);
   }, [phones]);
 
+  useEffect(() => {
+    const isValid =
+      validatePhoneNumber(firstPhone) &&
+      (!secondPhone || validatePhoneNumber(secondPhone));
+
+    setIsFormValid(isValid);
+  }, [firstPhone, secondPhone]);
+
   return (
     <>
-      {loading && <Loading/>}
+      {loading && <Loading />}
       <Grid container marginBlock={"100px"} justifyContent={"center"}>
         <Grid
           item
@@ -180,12 +205,13 @@ const UserInfoAndOrders = () => {
             sx={{
               fontWeight: "bold",
               textAlign: "center",
-              fontSize: { xs: "24px", md: "26px" },
+              mb: { xs: "20px", md: "30px" },
+              mt: "32px",
+              fontSize: { xs: "24px", md: "28px" },
             }}
           >
             User Info
           </Typography>
-
           <Box sx={{ mb: { xs: "10px", md: "19px" } }}>
             <Typography
               variant="body1"
@@ -200,9 +226,7 @@ const UserInfoAndOrders = () => {
               variant="outlined"
               disabled={!isEditMode}
               value={fullName}
-              onChange={(e: ChangeEvent) => {
-                setFullName((e.target as HTMLInputElement).value);
-              }}
+              onChange={(e) => setFullName(e.target.value)}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "15px",
@@ -228,15 +252,19 @@ const UserInfoAndOrders = () => {
               fontSize={{ xs: "18px", md: "20px" }}
               sx={{ mb: "10px" }}
             >
-              Phone Number
+              First Phone No
             </Typography>
             <TextField
               fullWidth
               variant="outlined"
               disabled={!isEditMode}
               value={firstPhone}
+              error={firstPhoneError}
+              helperText={firstPhoneError ? "Only numbers are allowed" : ""}
               onChange={(e: ChangeEvent) => {
-                setFirstPhone((e.target as HTMLInputElement).value);
+                const value = (e.target as HTMLInputElement).value;
+                setFirstPhone(value);
+                setFirstPhoneError(!validatePhoneNumber(value));
               }}
               sx={{
                 "& .MuiOutlinedInput-root": {
@@ -269,10 +297,14 @@ const UserInfoAndOrders = () => {
               fullWidth
               variant="outlined"
               onChange={(e: ChangeEvent) => {
-                setSecondPhone((e.target as HTMLInputElement).value);
+                const value = (e.target as HTMLInputElement).value;
+                setSecondPhone(value);
+                setSecondPhoneError(!validatePhoneNumber(value));
               }}
               disabled={!isEditMode}
               value={secondPhone}
+              error={secondPhoneError}
+              helperText={secondPhoneError ? "Only numbers are allowed" : ""}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "15px",
@@ -335,14 +367,8 @@ const UserInfoAndOrders = () => {
                 mb: "32px",
                 fontSize: { xs: "16px", md: "16px" },
               }}
-              onClick={() => {
-                if (isEditMode) {
-                  handleOnEdit();
-                  setIsEditMode((pre) => !pre);
-                } else {
-                  setIsEditMode((pre) => !pre);
-                }
-              }}
+              onClick={handleOnEdit}
+              disabled={isEditMode && !isFormValid}
             >
               {isEditMode ? "Save Changes" : "Edit User Info"}
             </Button>
