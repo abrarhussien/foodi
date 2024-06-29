@@ -74,6 +74,7 @@ function NavBar({
     if (auth.token) {
       const res = await axiosPrivate.get(url + "/notification/user");
 
+      console.log(res.data);
       if (res.status == 200) {
         setNotifications(res.data);
       }

@@ -9,15 +9,17 @@ import Image from "../shared/Image";
 import Section from "../shared/Section";
 import { Box } from "@mui/material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import Loading from "../shared/Loading";
 
 export const Menu = () => {
   const axiosPrivate = useAxiosPrivate();
 
   const location = useLocation();
-  const {id}=useParams()
+  const { id } = useParams();
 
   const [menu, setMenu] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<IMenuCategory[]>([]);
+  const [loading, setLoading] = useState(false);
   const [restaurantInfo, setRestaurantInfo] = useState<IRestaurant>(
     {} as IRestaurant
   );
@@ -37,12 +39,20 @@ export const Menu = () => {
   const handleGetRestaurantInfo = async () => {
     const res = await axiosPrivate.get("/api/v1/restaurant/" + id);
     setRestaurantInfo(res.data);
-  }
+  };
+
+  const handlers = async () => {
+    setLoading(true);
+
+    await handleGetMenuItems();
+    await handleGetCategories();
+    await handleGetRestaurantInfo();
+
+    setLoading(false);
+  };
 
   useEffect(() => {
-    handleGetMenuItems();
-    handleGetCategories();
-    handleGetRestaurantInfo();
+    handlers();
   }, [location.state]);
 
   const handleCategoryClick = (categoryId: string) => {
@@ -51,29 +61,35 @@ export const Menu = () => {
 
   return (
     <>
-      <Image restaurantInfo={restaurantInfo} />
-      {categories.length > 0 && (
-        <Section
-          categories={categories}
-          sectionRefs={sectionRefs}
-          onCategoryClick={handleCategoryClick}
-        />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Image restaurantInfo={restaurantInfo} />
+          {categories.length > 0 && (
+            <Section
+              categories={categories}
+              sectionRefs={sectionRefs}
+              onCategoryClick={handleCategoryClick}
+            />
+          )}
+          {categories.map((category) => (
+            <Box
+              id={category._id}
+              key={category._id}
+              ref={(el: any) => (sectionRefs.current[category._id] = el)}
+            >
+              <Category
+                name={category.name}
+                products={menu.filter(
+                  (item) => item.menuCategoryId._id === category._id
+                )}
+              />
+            </Box>
+          ))}
+          <About restaurantInfo={restaurantInfo} />
+        </>
       )}
-      {categories.map((category) => (
-        <Box
-          id={category._id}
-          key={category._id}
-          ref={(el:any) => (sectionRefs.current[category._id] = el)}
-        >
-          <Category
-            name={category.name}
-            products={menu.filter(
-              (item) => item.menuCategoryId._id === category._id
-            )}
-          />
-        </Box>
-      ))}
-      <About restaurantInfo={restaurantInfo} />
     </>
   );
 };
