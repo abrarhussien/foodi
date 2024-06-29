@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
-
-
 function AddAdress({
   setAddAddressPopUp,
   addAddress,
@@ -30,12 +28,9 @@ function AddAdress({
   };
   const handleAddAddress = () => {
     const fetchAddAddress = async () => {
-      const res = await axiosPrivate.post(
-        url + "/addresses",
-        {
-          details: address,
-        }
-      );
+      const res = await axiosPrivate.post(url + "/addresses", {
+        details: address,
+      });
       addAddress(res.data);
       setCheckoutInfo((pre: any) => {
         return { phone: pre.phone, address: res.data._id };

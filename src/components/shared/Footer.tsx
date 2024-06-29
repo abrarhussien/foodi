@@ -113,9 +113,7 @@ function Footer({ whyUsRef }: { whyUsRef: React.MutableRefObject<undefined> }) {
               </Button>
               <Button
                 onClick={() =>
-                  window.location.replace(
-                    "https://www.facebook.com/profile.php?id=100084282463490"
-                  )
+                  window.location.replace("https://x.com/FoodiSocial20")
                 }
               >
                 {/* Facebook Icon */}
@@ -146,7 +144,9 @@ function Footer({ whyUsRef }: { whyUsRef: React.MutableRefObject<undefined> }) {
               </Button>
               <Button
                 onClick={() =>
-                  window.location.replace("https://x.com/FoodiSocial20")
+                  window.location.replace(
+                    "https://www.facebook.com/profile.php?id=100084282463490"
+                  )
                 }
               >
                 {/* Twitter Icon */}

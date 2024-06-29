@@ -26,12 +26,9 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
 const url = "https://back-end-j1bi.onrender.com/api/v1";
 
-
-
-
 function Checkout({}) {
   const axiosPrivate = useAxiosPrivate();
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const [phones, setPhones] = useState<IPhone[]>([]);
   const [addresses, setAddresses] = useState<IAddress[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -142,10 +139,10 @@ function Checkout({}) {
       }
     };
     const fetchStripe = async () => {
-      const res = await axiosPrivate.post(
-        url + "/payments",
-        { phoneId: checkoutInfo.phone, addressId: checkoutInfo.address }
-      );
+      const res = await axiosPrivate.post(url + "/payments", {
+        phoneId: checkoutInfo.phone,
+        addressId: checkoutInfo.address,
+      });
       window.location.replace(res.data.session.url);
 
       // socket.emit("new-order-req", restaurantId);
@@ -521,7 +518,9 @@ function Checkout({}) {
                 </Grid>
                 <Grid item xs={12} md={4} lg={12}>
                   <Button
-                  onClick={()=>{navigate("/menu/"+ restaurantId)}}
+                    onClick={() => {
+                      navigate("/menu/" + restaurantId);
+                    }}
                     variant="outlined"
                     sx={{
                       width: "100%",

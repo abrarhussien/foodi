@@ -22,7 +22,6 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 interface IProps {}
 
 const Details = ({}: IProps) => {
-
   const axiosPrivate = useAxiosPrivate();
   const theme = useTheme();
 
@@ -68,13 +67,10 @@ const Details = ({}: IProps) => {
     }
 
     try {
-      const res = await axiosPrivate.post(
-        "/api/v1/cart",
-        {
-          productId: product._id,
-          quantity: quantity,
-        });
-
+      const res = await axiosPrivate.post("/api/v1/cart", {
+        productId: product._id,
+        quantity: quantity,
+      });
 
       if (restaurantId && restaurantId !== product.restaurantId) {
         setCartItems([]);
@@ -109,10 +105,9 @@ const Details = ({}: IProps) => {
     }
   };
 
-  const getProductDetails=async(id:any)=>{
-    const res = await axiosPrivate.get(url+"/products/" +resId+"/"+ id);
-    if(res.status=200){
-
+  const getProductDetails = async (id: any) => {
+    const res = await axiosPrivate.get(url + "/products/" + resId + "/" + id);
+    if ((res.status = 200)) {
       setProductDetails(res.data);
     }
   };

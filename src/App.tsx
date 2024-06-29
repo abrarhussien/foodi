@@ -34,7 +34,6 @@ function App() {
   const path = useLocation().pathname;
   const [openSideCart, setOpenSideCart] = useState(false);
 
-
   const {
     cartItems,
     setCartItems,
@@ -50,12 +49,11 @@ function App() {
     restaurantId,
     setRestaurantId,
   }: any = useContext(CartContext);
-  const {auth,setAuth,isUser,setisUser}:any=useAuth();
+  const { auth, setAuth, isUser, setisUser }: any = useAuth();
 
   const whyUsRef = useRef();
 
   const axiosPrivate = useAxiosPrivate();
-
 
   useEffect(() => {
     const getUserCart = async () => {
@@ -78,11 +76,11 @@ function App() {
 
       if (expDate > nowDate) {
         setisUser(true);
-        setAuth({token});
+        setAuth({ token });
         getUserCart();
       } else {
         localStorage.removeItem("token");
-        setAuth({token:""})
+        setAuth({ token: "" });
       }
     } else {
       setisUser(false);

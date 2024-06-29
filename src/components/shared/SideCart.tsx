@@ -43,12 +43,9 @@ function SideCart({
     }
     editItemQuantity(item.productId._id, newQuantity);
     const fetchEditItemQuantity = async () => {
-      const res = await axiosPrivate.patch(
-        url + "/cart/" + item._id,
-        {
-          quantity: item.quantity + newQuantity,
-        }
-      );
+      const res = await axiosPrivate.patch(url + "/cart/" + item._id, {
+        quantity: item.quantity + newQuantity,
+      });
     };
     fetchEditItemQuantity();
   };

@@ -28,12 +28,9 @@ function AddNumber({
   };
   const handleAddPhone = () => {
     const fetchAddPhone = async () => {
-      const res = await axiosPrivate.post(
-        url + "/phones",
-        {
-          phoneNumber: phone,
-        }
-      );
+      const res = await axiosPrivate.post(url + "/phones", {
+        phoneNumber: phone,
+      });
       addPhoneNumber(res.data);
       setCheckoutInfo((pre: any) => {
         return { phone: res.data._id, address: pre.address };

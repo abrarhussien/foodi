@@ -34,7 +34,7 @@ function NavBar({
   whyUsRef: React.MutableRefObject<undefined>;
 }) {
   const axiosPrivate = useAxiosPrivate();
-  const {pathname}=useLocation();
+  const { pathname } = useLocation();
 
   //@ts-ignore
   const { cartQuantity } = React.useContext(CartContext);
@@ -43,7 +43,7 @@ function NavBar({
   const [showNotifications, setShowNotifications] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const {auth,setAuth}:any=useAuth();
+  const { auth, setAuth }: any = useAuth();
   const scrollToWhyUs = () => {
     const { current } = whyUsRef;
     if (current !== null) {
@@ -55,7 +55,7 @@ function NavBar({
   const handleLogOut = () => {
     localStorage.removeItem("token");
     setisUser(false);
-    setAuth({token:""})
+    setAuth({ token: "" });
   };
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -81,7 +81,6 @@ function NavBar({
   };
 
   const handleGetNotificationById = async (id: string) => {
-    
     if (auth.token) {
       const res = await axiosPrivate.get(url + "/notification/user/" + id);
 
@@ -135,9 +134,7 @@ function NavBar({
     }
   }, [newNotification]);
 
-  useEffect(()=>{
-    
-  },[pathname])
+  useEffect(() => {}, [pathname]);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "inherit", boxShadow: 0 }}>
@@ -263,7 +260,6 @@ function NavBar({
 
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
-  
                 <Button
                   key={page}
                   onClick={() => {
@@ -284,9 +280,8 @@ function NavBar({
                     display: "block",
                     fontWeight: "700",
                     // color:pathname.includes(page.toLowerCase())| pathname="/" & page=="Home"?"#d84339":"#0a0a0a",
-                    color:"#0a0a0a",
-                    "&:hover":{color:"#d84339"}
-                  
+                    color: "#0a0a0a",
+                    "&:hover": { color: "#d84339" },
                   }}
                 >
                   {page}
