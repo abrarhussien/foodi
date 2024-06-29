@@ -66,7 +66,6 @@ function App() {
         setRestaurantId(res.data.itemsIds[0].productId.restaurantId);
         calculateQuantity(newCartItems);
         calculateTotal(newCartItems);
-        console.log(newCartItems)
       }
     };
 
